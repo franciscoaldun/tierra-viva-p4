@@ -1,5 +1,7 @@
 # TIERRA VIVA + BIOMA en un ESP32-P4
 
+![estado](https://img.shields.io/badge/estado-probado%20en%20hardware-brightgreen) ![chip](https://img.shields.io/badge/ESP32--P4-v1.0-blue) ![C3](https://img.shields.io/badge/ESP32--C3-Wi--Fi%20ESP--Hosted-orange) ![IDF](https://img.shields.io/badge/ESP--IDF-v6.1-red) ![lenguaje](https://img.shields.io/badge/lenguaje-C-555)
+
 La Tierra en vivo en una pantalla táctil de 2,8", dibujada entera por un ESP32-P4 sin GPU:
 
 - la luz del sol de este instante;
@@ -95,3 +97,7 @@ Internet por el cable USB: en el PC, `python tierra/puente_internet.py`.
 - EEI: [wheretheiss.at](https://wheretheiss.at).
 - Aviones: [The OpenSky Network](https://opensky-network.org). Sin cuenta permite ~100 consultas al día, por eso las posiciones se renuevan cada 15 min.
 - ESP-Hosted (Espressif, Apache-2.0), incluido con un parche de resincronización del UART.
+
+## Autor
+Desarrollado por **Francisco Aldunate** — firmware para ESP32 (P4, S3 y C3) en C con ESP-IDF, el framework oficial de Espressif.
+Portafolio: [franciscoaldunate.cl](https://franciscoaldunate.cl) · GitHub: [@franciscoaldun](https://github.com/franciscoaldun)
