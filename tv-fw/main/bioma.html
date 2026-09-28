@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BIOMA P4</title>
+<style>
+:root{--bg:#030308;--fg:#e8f4ff;--dim:#7d8aa0;--acc:#34e0ff;--pan:rgba(8,10,20,.72)}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:14px system-ui,sans-serif;overflow:hidden}
+#v{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
+#p{position:fixed;left:16px;bottom:16px;max-width:min(420px,calc(100% - 32px));background:var(--pan);backdrop-filter:blur(8px);
+   border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;transition:opacity .4s}
+body.limpio #p{opacity:0}
+h1{font-size:15px;margin:0 0 6px;letter-spacing:.08em}
+.g{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-variant-numeric:tabular-nums}
+.g span:nth-child(odd){color:var(--dim)}
+button{background:transparent;color:var(--fg);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 10px;margin:8px 6px 0 0;cursor:pointer}
+button:hover{border-color:var(--acc)}
+small{color:var(--dim)}
+details{margin-top:8px}summary{cursor:pointer;color:var(--acc)}
+input{background:rgba(255,255,255,.06);color:var(--fg);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 8px;margin:6px 6px 0 0;width:9.5em}
+#tvw{font-size:12px;margin-top:6px}
+</style></head><body>
+<img id="v" alt="BIOMA en vivo">
+<div id="p">
+  <h1>BIOMA · fondo vivo en un ESP32-P4</h1>
+  <div class="g" id="g"></div>
+  <div>
+    <button onclick="dia(1)">Día real</button><button onclick="dia(144)">Día de 10 min</button>
+    <button onclick="reloj()">Reloj sí/no</button>
+    <button onclick="hora()">Sincronizar hora</button><button onclick="document.body.classList.toggle('limpio')">Ocultar panel (H)</button>
+    <button onclick="volver()">Volver a Cerebro P4</button><button onclick="reiniciar()">Reiniciar P4</button>
+  </div>
+  <small>El chip juzga cada genoma por el tamaño de su JPEG: ni liso ni ruido.</small>
+  <details><summary>Tele y Wi-Fi</summary>
+    <div class="g" id="tvw"></div>
+    <div><input id="red" placeholder="Red Wi-Fi (2,4 GHz)" autocomplete="off"><input id="clave" type="password" placeholder="Clave" autocomplete="off"><button onclick="wifi()">Conectar Wi-Fi</button></div>
+    <div><button onclick="tv('modo=0')">Tele: BIOMA</button><button onclick="tv('modo=1')">Tele: carta</button>
+      <button onclick="tv('uncable='+(tvst.uncable?0:1))">1 cable sí/no</button><button onclick="prueba()">Autoprueba</button>
+      <button onclick="tv('audio='+(tvst.audio?0:1))">Sonido sí/no</button></div>
+  </details>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+// Por el cable USB: video de 1080p. Por Wi-Fi (a través del C3): video liviano de 480x256 por el puerto 81 (su propia
+// tarea, no traba la página). Si el video se corta, se vuelve a pedir; si no arranca, fotos sueltas que se renuevan.
+if(location.hostname==='192.168.7.1'){$('v').src='http://'+location.hostname+':81/stream';}
+else{const img=$('v');let fotos=false;
+  const video=()=>{img.src='http://'+location.hostname+':81/stream?chico=1&t='+Date.now()};
+  const otra=()=>{img.src='/snap.jpg?chico=1&t='+Date.now()};
+  img.onerror=()=>{if(fotos)setTimeout(otra,1000);else setTimeout(video,1500)};
+  img.onload=()=>{if(fotos)setTimeout(otra,30)};
+  video();
+  setTimeout(()=>{if(!img.naturalWidth){fotos=true;otra()}},6000);}
+function fila(k,v){return '<span>'+k+'</span><span>'+v+'</span>'}
+async function tick(){
+  try{
+    const e=await (await fetch('/api/estado')).json(), g=e.genoma, h=e.dia*24;
+    $('g').innerHTML=fila('Generación',e.generacion+' ('+e.aceptadas+' aceptadas) · '+e.modo)+
+      fila('Complejidad','actual '+e.kb_actual.toFixed(1)+' KB · candidato '+e.kb_candidato.toFixed(1)+' KB · objetivo '+e.objetivo_kb.toFixed(1)+' KB')+
+      fila('Midiendo',e.midiendo)+
+      fila('Hora del bioma',String(Math.floor(h)).padStart(2,'0')+':'+String(Math.floor(h%1*60)).padStart(2,'0')+' (×'+e.velocidad_dia+')')+
+      fila('Genoma','SA '+g.sa.toFixed(2)+' · RA '+g.ra.toFixed(2)+' · SD '+g.sd.toFixed(1)+' · decay '+g.decay.toFixed(2)+' · renace '+(g.respawn*100).toFixed(2)+'%')+
+      fila('Chip',e.fps.toFixed(1)+' fps · CPU '+e.cpu[0]+'/'+e.cpu[1]+'% · JPEG '+e.jpeg_enc+'% · PPA '+e.ppa+'% · '+e.temp.toFixed(1)+' °C');
+  }catch(x){}
+}
+let tvst={};
+async function tick2(){
+  try{
+    const t=await (await fetch('/api/tv')).json(), w=await (await fetch('/api/wifi')).json(); tvst=t;
+    const modos=['BIOMA','carta de ajuste','negro','blanco'];
+    $('tvw').innerHTML=fila('Wi-Fi',w.estado+(w.ip?' · '+w.ip:'')+(w.red?' · '+w.red:'')+(w.hora_internet?' · hora de internet ✓':''))+
+      fila('Tele',(t.ok?'señal activa':'sin señal')+' · '+modos[t.modo]+' · '+(t.uncable?'1 cable (sin resistencias)':'6 resistencias')+' · '+(t.pclk_hz/1e6).toFixed(6)+' MHz')+
+      fila('Autoprueba',t.prueba?('reloj medido '+(t.prueba.pclk_hz/1e6).toFixed(4)+' MHz · capturas '+JSON.stringify(t.prueba.flanco_bajada)):'—');
+  }catch(x){}
+}
+function tv(q){fetch('/api/tv?'+q).then(tick2)}
+function prueba(){$('tvw').innerHTML+=fila('Autoprueba','grabando la salida…');fetch('/api/tv/prueba').then(tick2)}
+function wifi(){const r=$('red').value,c=$('clave').value;if(!r)return;fetch('/api/wifi?red='+encodeURIComponent(r)+'&clave='+encodeURIComponent(c)).then(()=>{$('clave').value='';tick2()})}
+function dia(v){fetch('/api/dia?v='+v)}
+let relojOn=true;function reloj(){relojOn=!relojOn;fetch('/api/reloj?v='+(relojOn?1:0))}
+function hora(){const d=new Date();fetch('/api/hora?s='+(d.getHours()*3600+d.getMinutes()*60+d.getSeconds()))}
+function reiniciar(){if(confirm('¿Reiniciar el P4? Vuelve solo en unos 15 segundos.'))fetch('/api/reiniciar').then(r=>r.text()).then(t=>alert(t))}
+function volver(){if(confirm('¿Reiniciar el P4 en Cerebro P4? BIOMA queda guardado.'))fetch('/api/volver').then(r=>r.text()).then(t=>alert(t))}
+addEventListener('keydown',e=>{if(e.key==='h'||e.key==='H')document.body.classList.toggle('limpio')});
+hora();tick();tick2();setInterval(tick,2000);setInterval(tick2,4000);setInterval(hora,600000);
+</script></body></html>

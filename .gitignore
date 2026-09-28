@@ -1,0 +1,7 @@
+build/
+managed_components/
+*.log
+sdkconfig.old
+__pycache__/
+*.ppm
+

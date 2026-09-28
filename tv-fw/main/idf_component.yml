@@ -1,0 +1,8 @@
+dependencies:
+  idf: ">=6.0"
+  # mismas versiones que Cerebro P4 (usb.c depende de ellas)
+  espressif/esp_tinyusb: "==2.3.0"
+  espressif/tinyusb: "==0.21.0~2"
+  # Wi-Fi a través del ESP32-C3 montado encima (ESP-Hosted por UART): el P4 usa la API esp_wifi como si fuera suya
+  espressif/esp_hosted: "==2.12.0"
+  espressif/esp_wifi_remote: ">=1.0.0"
