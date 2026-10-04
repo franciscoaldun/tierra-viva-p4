@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "Tierra Viva: ESP32-P4 hardware stress test"
+abstract: >-
+  A real-world stress test of the ESP32-P4: both RISC-V cores at 86-96 % with the PPA, DMA, hardware JPEG and hardware crypto working at once, rendering a live Earth (sunlight, satellite clouds, earthquakes, ISS, ~6,500 aircraft) on a 2.8-inch touchscreen at 21-24 fps with no GPU, with internet over a USB tunnel or an ESP32-C3 running ESP-Hosted.
+authors:
+  - family-names: "Aldunate Rodríguez"
+    given-names: "Francisco"
+    email: "franciscoaldun@gmail.com"
+    website: "https://franciscoaldunate.cl"
+    city: "Talca"
+    country: "CL"
+repository-code: "https://github.com/franciscoaldun/tierra-viva-p4"
+url: "https://franciscoaldunate.cl"
+license: MIT
+version: "1.0"
+date-released: "2026-10-04"
+keywords:
+  - ESP32-P4
+  - benchmark
+  - stress test
+  - PPA
+  - ESP-Hosted
+  - embedded graphics
+  - ESP-IDF
