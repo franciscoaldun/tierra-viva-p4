@@ -10,6 +10,7 @@ authors:
     website: "https://franciscoaldunate.cl"
     city: "Talca"
     country: "CL"
+doi: "10.5281/zenodo.23135959"
 repository-code: "https://github.com/franciscoaldun/tierra-viva-p4"
 url: "https://franciscoaldunate.cl"
 license: MIT

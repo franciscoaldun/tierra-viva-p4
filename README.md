@@ -4,7 +4,7 @@
 
 **Una prueba de esfuerzo real del ESP32-P4:** los dos núcleos al 86-96 %, el PPA, el DMA, el JPEG y el cifrado por hardware trabajando **al mismo tiempo**, mientras dibuja la Tierra en vivo, sin GPU. Sirve para saber de qué es capaz este chip de US$15 antes de diseñar con él: cada número de abajo está medido en la placa.
 
-![estado](https://img.shields.io/badge/estado-probado%20en%20hardware-brightgreen) ![chip](https://img.shields.io/badge/ESP32--P4-v1.0-blue) ![C3](https://img.shields.io/badge/ESP32--C3-Wi--Fi%20ESP--Hosted-orange) ![IDF](https://img.shields.io/badge/ESP--IDF-v6.1-red) ![lenguaje](https://img.shields.io/badge/lenguaje-C-555)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23135959.svg)](https://doi.org/10.5281/zenodo.23135959) ![estado](https://img.shields.io/badge/estado-probado%20en%20hardware-brightgreen) ![chip](https://img.shields.io/badge/ESP32--P4-v1.0-blue) ![C3](https://img.shields.io/badge/ESP32--C3-Wi--Fi%20ESP--Hosted-orange) ![IDF](https://img.shields.io/badge/ESP--IDF-v6.1-red) ![lenguaje](https://img.shields.io/badge/lenguaje-C-555)
 
 La Tierra en vivo en una pantalla táctil de 2,8", dibujada entera por un ESP32-P4 sin GPU:
 
